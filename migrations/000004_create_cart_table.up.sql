@@ -1,0 +1,10 @@
+CREATE TABLE IF NOT EXISTS cart (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL,
+  is_active BOOLEAN DEFAULT TRUE, -- актуальная корзина
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE INDEX idx_cart_user_id ON cart (user_id);
