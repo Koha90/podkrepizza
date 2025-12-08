@@ -30,6 +30,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r.Post("/api/register", s.registerHandler)
 	r.Post("/api/login", s.loginHandler)
 	r.Get("/api/profile", s.profileHandler)
+	r.Get("/api/profile/update", s.profileUpdate)
 	r.Post("/api/logout", s.logoutHandler)
 
 	return r

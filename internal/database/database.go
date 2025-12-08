@@ -30,6 +30,9 @@ type Service interface {
 
 	// UserByEmail - получаем пользователя по его email.
 	UserByEmail(email string) (*models.User, error)
+
+	// UpdateUserByEmail - обновление профиля пользователя по его email.
+	UpdateUserByEmail(email string, name *string, phone *string) error
 }
 
 type service struct {

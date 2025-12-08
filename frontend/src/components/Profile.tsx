@@ -59,41 +59,42 @@ export default function Profile() {
       {!isLoggedIn ? (
         <div className="flex flex-col space-y-3 items-end">Войдите или Зарегистрируйтесь</div>
       ) : (
-        <div className="max-w-md mx-auto mt-10 p-5 border rounded shadow">
+        <div className="max-w-md mx-auto mt-10 p-5 border rounded shadow shadow-black">
           <h1 className="text-2xl font-bold mb-4">
             Приветствуем{name ? `, ${name}` : ""}!
           </h1>
           {email ? (
-            <p>
-              Email:  <pre className="font-mono">{email}</pre>
+            <p className="font-bold">
+              Email:  <pre className="font-medium font-mono">{email}</pre>
             </p>
           ) : (
-            <p>Загрузка...</p>
+            <p className="font-bold">Загрузка...</p>
           )}
           {phone ? (
-            <p>
-              Телефон: <pre className="font-mono">{phone}</pre>
+            <p className="font-bold">
+              Телефон: <pre className="font-medium font-mono">{phone}</pre>
             </p>
           ) : (
             <p>Загрузка...</p>
           )}
-          <p>
-            Роль: <pre className="font-mono">{admin ? "Администратор" : "Пользователь"}</pre>
+          <p className="font-bold">
+            Роль: <pre className="font-medium font-mono">{admin ? "Администратор" : "Пользователь"}</pre>
           </p>
-          <p>
-            Статус: <pre className="font-mono">{blocked ? "Заблокирован" : "Активен"}</pre>
+          <p className="font-bold">
+            Статус: <pre className="font-medium font-mono">{blocked ? "Заблокирован" : "Активен"}</pre>
           </p>
-          <p>
-            Дата регистрации: <pre className="font-mono">{createdAt}</pre>
+          <p className="font-bold">
+            Дата регистрации: <pre className="font-medium font-mono">{createdAt}</pre>
           </p>
           {updatedAt ? (
-            <p>
-              Последнее обновление профиля: <pre className="font-mono">{updatedAt}</pre>
+            <p className="font-bold">
+              Последнее обновление профиля: <pre className="font-medium font-mono">{updatedAt}</pre>
             </p>
           ) : (
-            <p>
+            <p className="font-bold">
               Обновлений профиля не было.</p>
           )}
+          <button className="border border-tertiary-600 rounded-md py-2 px-5 mt-5 bg-tertiary-500 hover:bg-tertiary-600 font-bold text-priamry-50">Обновить</button>
         </div>
       )}
     </>

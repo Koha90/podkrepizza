@@ -11,6 +11,7 @@ import (
 // UserByEmail ...
 func (s *service) UserByEmail(email string) (*models.User, error) {
 	const op = "database.User"
+
 	var user models.User
 	var name, phone sql.NullString
 
@@ -35,25 +36,21 @@ func (s *service) UserByEmail(email string) (*models.User, error) {
 }
 
 // UpdateUserByEmail ...
-func (s *service) UpdateUserByEmail(email string, updates models.User) error {
+func (s *service) UpdateUserByEmail(email string, name *string, phone *string) error {
 	const op = "database.UpdateUserByEmail"
 
 	query := `
 		UPDATE users
 		SET name = COALESCE(NULLIF($1, ''), name),
 				phone = COALESCE(NULLIF($2, ''), phone),
-				is_admin = $3,
-				is_blocked = $4,
 				updated_at = $5
 		WHERE email = $6
 	`
 
 	_, err := s.db.Exec(
 		query,
-		updates.Name,
-		updates.Phone,
-		updates.IsAdmin,
-		updates.IsBlocked,
+		name,
+		phone,
 		time.Now(),
 		email,
 	)

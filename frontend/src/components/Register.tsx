@@ -60,7 +60,7 @@ export default function Register() {
           />
         </div>
         <button
-          className="px-4 py-2 my-2 bg-green-500 text-white rounded-lg"
+          className="px-4 py-2 my-2 bg-quaternary-300 text-white rounded-lg"
           type="submit">
           Зарегистрироваться</button>
       </form>

@@ -13,7 +13,7 @@ export default function Header() {
 
   return (
     <header className="header pt-2">
-      <div className="flex justify-between max-w-6xl mx-auto px-4">
+      <div className="flex max-w-6xl mx-auto px-4 inset-0">
 
         {!isLoggedIn ? (
           <div className="flex flex-col space-y-3 items-end">

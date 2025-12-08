@@ -8,10 +8,12 @@ import { BrowserRouter } from 'react-router'
 import { Toaster } from 'react-hot-toast'
 
 createRoot(document.getElementById('root')!).render(
-  <BrowserRouter>
-    <AuthProvider>
-      <App />
-      <Toaster position='bottom-right' />
-    </AuthProvider>
-  </BrowserRouter>,
+  <StrictMode>
+    <BrowserRouter>
+      <AuthProvider>
+        <App />
+        <Toaster position='bottom-right' />
+      </AuthProvider>
+    </BrowserRouter>
+  </StrictMode>
 )
