@@ -15,9 +15,10 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r.Use(middleware.Logger)
 
 	r.Use(cors.Handler(cors.Options{
-		AllowedOrigins:   []string{"https://*", "http://*"},
+		AllowedOrigins: []string{"http://localhost:5173", "http://127.0.0.1:5173"},
+		// AllowedOrigins:   []string{"https://*", "http://*"},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
-		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "Cookie"},
 		AllowCredentials: true,
 		MaxAge:           300,
 	}))
@@ -30,8 +31,21 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r.Post("/api/register", s.registerHandler)
 	r.Post("/api/login", s.loginHandler)
 	r.Get("/api/profile", s.profileHandler)
-	r.Get("/api/profile/update", s.profileUpdate)
+	r.Patch("/api/profile/update", s.profileUpdate)
 	r.Post("/api/logout", s.logoutHandler)
+
+	// r.Get("/api/admin/users", s.usersHandler)
+
+	// Роуты только для админа.
+	r.Route("/api/admin", func(r chi.Router) {
+		r.Use(s.adminOnly)
+		r.Options(
+			"/*",
+			func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(http.StatusOK) },
+		)
+		r.Get("/users", s.usersHandler)
+		r.Patch("/users/:id", nil)
+	})
 
 	return r
 }

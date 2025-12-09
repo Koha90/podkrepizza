@@ -8,6 +8,55 @@ import (
 	"github.com/koha90/podkrepizza/internal/models"
 )
 
+// AllUsers ...
+func (s *service) AllUsers() ([]*models.User, error) {
+	const op = "database.AllUsers"
+
+	var users []*models.User
+
+	query := `
+		SELECT id, email, name, phone, is_admin, is_blocked, created_at, updated_at
+		FROM users
+	`
+
+	rows, err := s.db.Query(query)
+	if err != nil {
+		return nil, fmt.Errorf("%s: query error: %w", op, err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var (
+			u     models.User
+			name  sql.NullString
+			phone sql.NullString
+		)
+		if err := rows.Scan(&u.ID, &u.Email, &name, &phone, &u.IsAdmin, &u.IsBlocked, &u.CreatedAt, &u.UpdatedAt); err != nil {
+			return nil, fmt.Errorf("%s: scan error: %w", op, err)
+		}
+
+		if name.Valid {
+			u.Name = name.String
+		} else {
+			u.Name = ""
+		}
+
+		if phone.Valid {
+			u.Phone = phone.String
+		} else {
+			u.Phone = ""
+		}
+
+		users = append(users, &u)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("%s: rows error: %w", op, err)
+	}
+
+	return users, nil
+}
+
 // UserByEmail ...
 func (s *service) UserByEmail(email string) (*models.User, error) {
 	const op = "database.User"
@@ -43,8 +92,8 @@ func (s *service) UpdateUserByEmail(email string, name *string, phone *string) e
 		UPDATE users
 		SET name = COALESCE(NULLIF($1, ''), name),
 				phone = COALESCE(NULLIF($2, ''), phone),
-				updated_at = $5
-		WHERE email = $6
+				updated_at = $3
+		WHERE email = $4
 	`
 
 	_, err := s.db.Exec(

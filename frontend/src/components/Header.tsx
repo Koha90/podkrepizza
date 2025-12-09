@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthContext";
 
 export default function Header() {
   const navigate = useNavigate()
-  const { isLoggedIn, logout } = useAuth();
+  const { isLoggedIn, logout, user } = useAuth();
 
   const handleLogout = async () => {
     await logout();
@@ -31,12 +31,21 @@ export default function Header() {
             </button>
           </div>
         ) : (
-          <button
-            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
-            onClick={handleLogout}
-          >
-            Выйти
-          </button>
+          <nav className="flex space-x-4 p-4 w-full bg-grey-100">
+            <button
+              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+              onClick={handleLogout}
+            >
+              Выйти
+            </button>
+            {user?.is_admin && (
+              <button
+                onClick={() => navigate("/admin/users")}
+                className="px-4 py-2 w-40 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
+                Пользователи
+              </button>
+            )}
+          </nav>
         )}
       </div>
     </header >

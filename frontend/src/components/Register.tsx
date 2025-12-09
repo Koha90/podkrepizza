@@ -4,12 +4,22 @@ import toast from "react-hot-toast";
 export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setMessage("");
 
+    if (password !== confirmPassword) {
+      toast.error("Пароли не совпадают!")
+      return
+    }
+
+    if (password.length < 6) {
+      toast.error("Пароль должен быть минимум 6 символов!")
+      return
+    }
 
     try {
       const response = await fetch("http://localhost:8080/api/register", {
@@ -49,13 +59,23 @@ export default function Register() {
             required
           />
         </div>
-        <div>
+        <div className="mt-3">
           <label>Пароль</label>
           <input
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+        <div className="mt-3">
+          <label>Подтвердите пароль</label>
+          <input
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
         </div>

@@ -44,6 +44,11 @@ func (s *Server) profileHandler(w http.ResponseWriter, r *http.Request) {
 func (s *Server) profileUpdate(w http.ResponseWriter, r *http.Request) {
 	const op = "server.profileHandler"
 
+	if r.Method != http.MethodPatch {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+
 	c, err := r.Cookie("token")
 	if err != nil {
 		s.log.Error(op+": Token error", "error", err)
@@ -67,9 +72,10 @@ func (s *Server) profileUpdate(w http.ResponseWriter, r *http.Request) {
 		Name  *string `json:"name"`
 		Phone *string `json:"phone"`
 	}
+
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		s.log.Error(op+"Decode error", "error", err)
-		http.Error(w, "bad request", http.StatusUnauthorized)
+		http.Error(w, "bad request", http.StatusBadRequest)
 		return
 	}
 

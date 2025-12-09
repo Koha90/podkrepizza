@@ -76,8 +76,8 @@ func (s *Server) loginHandler(w http.ResponseWriter, r *http.Request) {
 		Value:    tokenString,
 		Expires:  expiration,
 		HttpOnly: true,
-		Secure:   false,                   // INFO: Убрать после разработки на проде.
-		SameSite: http.SameSiteStrictMode, // для обычного сайта. http.SameSiteLaxMode для telegram.
+		Secure:   false,                // INFO: Убрать после разработки на проде.
+		SameSite: http.SameSiteLaxMode, // для обычного сайта. http.SameSiteLaxMode для telegram.
 		Path:     "/",
 	})
 
@@ -92,7 +92,7 @@ func (s *Server) logoutHandler(w http.ResponseWriter, r *http.Request) {
 		HttpOnly: true,
 		Secure:   false, // INFO: Убрать после разработки на проде.
 
-		SameSite: http.SameSiteNoneMode,
+		SameSite: http.SameSiteLaxMode,
 		Expires:  time.Unix(0, 0),
 		MaxAge:   -1,
 	})
