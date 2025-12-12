@@ -28,43 +28,46 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    let mounted = true;
-
     (async () => {
       try {
         const res = await fetch("/api/profile", {
           method: "GET",
           credentials: "include",
         })
-        console.log("Profile fetch status", res.status)
-        console.log("Res is", res)
-
-        if (!mounted) return
 
         if (res.ok) {
           const data = await res.json()
-          console.log("Profile data: ", data)
-
-          setIsLoggedIn(true);
           setUser(data)
-        } else {
-          setIsLoggedIn(false)
-          setUser(null)
+          setIsLoggedIn(true);
         }
       } catch (err) {
+        console.error("auth check failed", err)
         setIsLoggedIn(false)
         setUser(null)
-        console.error("auth check failed", err)
       } finally {
         setLoading(false)
       }
     })()
-    return () => {
-      mounted = false
-    }
   }, [])
 
-  const login = () => setIsLoggedIn(true);
+  const login = async () => {
+    setLoading(true)
+    try {
+      const res = await fetch("/api/profile", {
+        method: "GET",
+        credentials: "include",
+      })
+      if (!res.ok) throw new Error()
+      const data = await res.json()
+      setUser(data)
+      setIsLoggedIn(true)
+    } catch {
+      setIsLoggedIn(false)
+      setUser(null)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const logout = async () => {
     try {

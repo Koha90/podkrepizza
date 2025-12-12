@@ -4,11 +4,21 @@ import { useAuth } from "../context/AuthContext";
 
 export default function Header() {
   const navigate = useNavigate()
-  const { isLoggedIn, logout, user } = useAuth();
+  const { isLoggedIn, logout, user, loading } = useAuth();
 
   const handleLogout = async () => {
     await logout();
     navigate("/login")
+  }
+
+  if (loading) {
+    return (
+      <header className="header pt-2">
+        <div className="flex max-w-6xl mx-auto px-4 inset-0">
+          <div className="p-4 text-gray-500">Загрузка...</div>
+        </div>
+      </header>
+    );
   }
 
   return (

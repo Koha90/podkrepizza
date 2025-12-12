@@ -1,10 +1,10 @@
 import { Routes, Route } from "react-router";
-import AdminRoute from "./components/AdminRoute"
+import AdminRoute from "./routes/AdminRoute"
 
 import Login from "./components/Login";
 import Register from "./components/Register";
-import Profile from "./components/Profile";
-import AdminUsers from "./components/AdminUsers";
+import Profile from "./pages/Profile";
+import AdminUsers from "./pages/AdminUsers";
 
 
 export default function AppRouters() {
