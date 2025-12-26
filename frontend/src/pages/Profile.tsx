@@ -102,7 +102,9 @@ export default function Profile() {
                   Телефон:<br /> <span className="font-medium font-mono">{phone}</span>
                 </p>
               ) : (
-                <p>Загрузка...</p>
+                <p className="font-bold">
+                  <p>Телефон:<br /> <span className="font-medium font-mono">Не указан</span></p>
+                </p>
               )}
               <p className="font-bold">
                 Роль:<br /> <span className="font-medium font-mono">{role === "admin" ? "Администратор" : role === "moderator" ? "Модератор" : "Пользователь"}</span>
