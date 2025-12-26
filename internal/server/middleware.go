@@ -27,7 +27,7 @@ func (s *Server) adminOnly(next http.Handler) http.Handler {
 		claims := tkn.Claims.(*models.Claims)
 		s.log.Debug("ADMIN CHECK", "email", claims.Email)
 		user, err := s.db.UserByEmail(claims.Email)
-		if err != nil || !user.IsAdmin {
+		if err != nil || user.Role != "admin" {
 			http.Error(w, "forbidden", http.StatusForbidden)
 			return
 		}

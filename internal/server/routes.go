@@ -44,7 +44,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 			func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(http.StatusOK) },
 		)
 		r.Get("/users", s.usersHandler)
-		r.Patch("/users/:id", nil)
+		r.Patch("/users/{id}", s.updateUserHandler)
 	})
 
 	return r

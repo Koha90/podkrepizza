@@ -6,7 +6,7 @@ type User = {
   email: string
   name?: string
   phone?: string
-  is_admin: boolean
+  role: "admin" | "moderator" | "user" | null
   blocked: boolean
   created_at: string
   updated_at: string

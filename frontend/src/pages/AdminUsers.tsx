@@ -7,11 +7,19 @@ type User = {
   email: string;
   name?: string;
   phone?: string;
-  is_admin: boolean;
+  role: string;
   blocked: boolean;
   created_at: string;
   updated_at: string;
 }
+
+const roles = {
+  admin: "Админ",
+  moderator: "Модер",
+  user: "Пользователь"
+} as const
+
+type Role = keyof typeof roles
 
 export default function AdminUsers() {
   const { isLoggedIn, user, loading } = useAuth();
@@ -32,14 +40,16 @@ export default function AdminUsers() {
     }
   }
 
-  const toggleAdmin = async (id: number, isAdmin: boolean) => {
+  const toggleAdmin = async (id: number, role: Role) => {
     try {
       await fetch(`http://localhost:8080/api/admin/users/${id}`, {
         method: "PATCH",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ is_admin: !isAdmin })
+        body: JSON.stringify({ role })
       })
+
+      toast.success(`Роль изменена на "${roles[role]}"`)
       fetchUsers();
     } catch (err) {
       toast.error("Ошибка при изменении прав")
@@ -54,6 +64,8 @@ export default function AdminUsers() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ is_blocked: !blocked })
       })
+
+      toast.success(!blocked ? "Пользователь заблокирован" : "Разблокирован")
       fetchUsers();
     } catch (err) {
       toast.error("Ошибка при изменении статуса")
@@ -61,13 +73,13 @@ export default function AdminUsers() {
   }
 
   useEffect(() => {
-    if (!loading && isLoggedIn && user?.is_admin) {
+    if (!loading && isLoggedIn && user?.role) {
       fetchUsers();
     }
   }, [loading, isLoggedIn, user])
 
   if (loading) return <div>Загрузка...</div>
-  if (!isLoggedIn || !user?.is_admin) return <div>Нет доступа</div>
+  if (!isLoggedIn || user?.role !== "admin") return <div>Нет доступа</div>
 
   return (
     <div className="p-5">
@@ -91,7 +103,13 @@ export default function AdminUsers() {
               <td className="py-2 px-4 border">{u.email}</td>
               <td className="py-2 px-4 border">{u.name}</td>
               <td className="py-2 px-4 border">{u.phone}</td>
-              <td className="py-2 px-4 border">{u.is_admin ? "Админ" : "Пользователь"}</td>
+              <td className="py-2 px-4 border">
+                {u.role === "admin"
+                  ? "Админ"
+                  : u.role === "moderator"
+                    ? "Модер"
+                    : "Пользователь"}
+              </td>
               <td className="py-2 px-4 border">{u.blocked ? "В бане" : "Активен"}</td>
               <td className="py-2 px-4 border">{new Date(u.created_at).toLocaleString("ru-RU", {
                 day: "2-digit",
@@ -108,14 +126,20 @@ export default function AdminUsers() {
                 minute: "2-digit"
               })}</td>
               <td className="py-2 px-4 border">
-                <button
-                  onClick={() => toggleAdmin(u.id, u.is_admin)}
-                  className="px-2 py-1 mb-2 bg-blue-500 text-white rounded w-full">
-                  {u.is_admin ? "Снять админа" : "Сделать админом"}
-                </button>
+                <select
+                  value={u.role}
+                  onChange={(e) => toggleAdmin(u.id, e.target.value as Role)}
+                  className="border px-2 py-1 rounded"
+                >
+                  {Object.entries(roles).map(([key, label]) => (
+                    <option key={key} value={key}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
                 <button
                   onClick={() => toggleBlocked(u.id, u.blocked)}
-                  className="px-2 py-1 bg-red-500 text-white rounded w-full">
+                  className="px-2 py-1 bg-red-500 hover:bg-red-400 text-white rounded w-full">
                   {u.blocked ? "Из бана" : "В бан"}
                 </button>
               </td>

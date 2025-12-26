@@ -30,12 +30,16 @@ type Service interface {
 
 	// UserByEmail - получаем пользователя по его email.
 	UserByEmail(email string) (*models.User, error)
-
 	// UpdateUserByEmail - обновление профиля пользователя по его email.
 	UpdateUserByEmail(email string, name *string, phone *string) error
-
 	// AllUsers - все зарегистрированные пользователи.
 	AllUsers() ([]*models.User, error)
+	// SetUserBlocked - меняет состояние блокировки пользователя
+	SetUserBlocked(id int64, blocked bool) error
+	// SetRole - меняет роль пользователя
+	SetRole(id int64, role string) error
+	// Categories - все категории товаров.
+	Categories() ([]*models.Category, error)
 }
 
 type service struct {

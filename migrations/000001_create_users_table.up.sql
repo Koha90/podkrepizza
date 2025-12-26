@@ -4,7 +4,7 @@ CREATE TABLE users (
   hash_password TEXT NOT NULL,
   name TEXT,
   phone TEXT,
-  is_admin BOOLEAN DEFAULT FALSE,
+  role TEXT DEFAULT 'user', -- "admin", "moderator", "user"
   is_blocked BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

@@ -15,7 +15,7 @@ func (s *service) AllUsers() ([]*models.User, error) {
 	var users []*models.User
 
 	query := `
-		SELECT id, email, name, phone, is_admin, is_blocked, created_at, updated_at
+		SELECT id, email, name, phone, role, is_blocked, created_at, updated_at
 		FROM users
 	`
 
@@ -31,7 +31,7 @@ func (s *service) AllUsers() ([]*models.User, error) {
 			name  sql.NullString
 			phone sql.NullString
 		)
-		if err := rows.Scan(&u.ID, &u.Email, &name, &phone, &u.IsAdmin, &u.IsBlocked, &u.CreatedAt, &u.UpdatedAt); err != nil {
+		if err := rows.Scan(&u.ID, &u.Email, &name, &phone, &u.Role, &u.IsBlocked, &u.CreatedAt, &u.UpdatedAt); err != nil {
 			return nil, fmt.Errorf("%s: scan error: %w", op, err)
 		}
 
@@ -59,29 +59,29 @@ func (s *service) AllUsers() ([]*models.User, error) {
 
 // UserByEmail ...
 func (s *service) UserByEmail(email string) (*models.User, error) {
-	const op = "database.User"
+	const op = "database.UserByEmail"
 
-	var user models.User
+	var u models.User
 	var name, phone sql.NullString
 
 	err := s.db.QueryRow(`
-		SELECT id, email, name, phone, is_admin, is_blocked, created_at, updated_at
+		SELECT id, email, name, phone, role, is_blocked, created_at, updated_at
 		FROM users
 		WHERE email=$1;
-		`, email).Scan(&user.ID, &user.Email, &name, &phone, &user.IsAdmin, &user.IsBlocked, &user.CreatedAt, &user.UpdatedAt)
+		`, email).Scan(&u.ID, &u.Email, &name, &phone, &u.Role, &u.IsBlocked, &u.CreatedAt, &u.UpdatedAt)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 
 	if name.Valid {
-		user.Name = name.String
+		u.Name = name.String
 	}
 
 	if phone.Valid {
-		user.Phone = phone.String
+		u.Phone = phone.String
 	}
 
-	return &user, nil
+	return &u, nil
 }
 
 // UpdateUserByEmail ...
@@ -103,6 +103,55 @@ func (s *service) UpdateUserByEmail(email string, name *string, phone *string) e
 		time.Now(),
 		email,
 	)
+	if err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
+
+	return nil
+}
+
+func (s *service) SetUserBlocked(id int64, blocked bool) error {
+	const op = "database.SetUserBlocked"
+
+	query := `
+		UPDATE users
+		SET is_blocked = $1,
+				updated_at = Now()
+		WHERE id = $2
+	`
+
+	_, err := s.db.Exec(query, blocked, id)
+	if err != nil {
+		return fmt.Errorf("%s: updated error: %w", op, err)
+	}
+
+	return nil
+}
+
+func (s *service) SetRole(id int64, role string) error {
+	const op = "database.SetRole"
+
+	query := `
+		UPDATE users
+		SET role = $1,
+				updated_at = Now()
+		WHERE id = $2
+	`
+
+	_, err := s.db.Exec(query, role, id)
+	if err != nil {
+		return fmt.Errorf("%s: updated role error: %w", op, err)
+	}
+
+	return nil
+}
+
+func (s *service) DeleteUserByID(id int64) error {
+	const op = "database.DeleteUserByID"
+
+	query := `DELETE FROM users WHERE id = $1`
+
+	_, err := s.db.Exec(query, id)
 	if err != nil {
 		return fmt.Errorf("%s: %w", op, err)
 	}

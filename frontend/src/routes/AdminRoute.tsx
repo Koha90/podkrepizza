@@ -12,7 +12,7 @@ const AdminRoute = ({ children }: { children: React.ReactElement }) => {
     return <Navigate to="/login" replace />
   }
 
-  if (!user?.is_admin) {
+  if (user?.role !== "admin") {
     return <Navigate to="/profile" replace />
   }
 

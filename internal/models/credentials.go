@@ -14,5 +14,6 @@ type Credentials struct {
 type Claims struct {
 	Email string         `json:"email"`
 	Name  sql.NullString `json:"name"`
+	Role  string         `json:"role"`
 	jwt.RegisteredClaims
 }

@@ -45,11 +45,11 @@ func (s *Server) loginHandler(w http.ResponseWriter, r *http.Request) {
 	var creds models.Credentials
 	json.NewDecoder(r.Body).Decode(&creds)
 
-	var storedPassword string
+	var storedPassword, role string
 	var name sql.NullString
 	err := s.db.DB().
-		QueryRow(`SELECT hash_password, name FROM users WHERE email=$1`, creds.Email).
-		Scan(&storedPassword, &name)
+		QueryRow(`SELECT hash_password, name, role FROM users WHERE email=$1`, creds.Email).
+		Scan(&storedPassword, &name, &role)
 	if err != nil {
 		s.log.Error("DB select error", "error", err)
 		http.Error(w, "invalid credentials", http.StatusUnauthorized)

@@ -42,19 +42,31 @@ export default function Header() {
           </div>
         ) : (
           <nav className="flex space-x-4 p-4 w-full bg-grey-100">
-            <button
-              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
-              onClick={handleLogout}
-            >
-              Выйти
-            </button>
-            {user?.is_admin && (
+
+            {user?.role === "admin" && (
               <button
                 onClick={() => navigate("/admin/users")}
                 className="px-4 py-2 w-40 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
                 Пользователи
               </button>
             )}
+            {(user?.role === "admin" || user?.role === "moderator") && (
+              <button onClick={() => navigate("/moderator/products")}>
+                Продукты
+              </button>
+            )}
+            <button
+              className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
+              onClick={() => navigate("/profile")}
+            >
+              Профиль
+            </button>
+            <button
+              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+              onClick={handleLogout}
+            >
+              Выйти
+            </button>
           </nav>
         )}
       </div>

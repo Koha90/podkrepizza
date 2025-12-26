@@ -8,7 +8,7 @@ export default function Profile() {
   const { isLoggedIn, logout } = useAuth();
   const [name, setName] = useState("")
   const [phone, setPhone] = useState("")
-  const [admin, setAdmin] = useState(false)
+  const [role, setRole] = useState("")
   const [blocked, setBlocked] = useState(false)
   const [createdAt, setCreatedAt] = useState<string | null>(null)
   const [updatedAt, setUpdatedAt] = useState<string | null>(null)
@@ -36,7 +36,7 @@ export default function Profile() {
         setName(data.name)
         setPhone(data.phone)
         setBlocked(data.blocked)
-        setAdmin(data.is_admin)
+        setRole(data.role)
 
         if (data.created_at) {
           setCreatedAt(new Date(data.created_at).toISOString().split("T")[0])
@@ -105,7 +105,7 @@ export default function Profile() {
                 <p>Загрузка...</p>
               )}
               <p className="font-bold">
-                Роль:<br /> <span className="font-medium font-mono">{admin ? "Администратор" : "Пользователь"}</span>
+                Роль:<br /> <span className="font-medium font-mono">{role === "admin" ? "Администратор" : role === "moderator" ? "Модератор" : "Пользователь"}</span>
               </p>
               <p className="font-bold">
                 Статус:<br /> <span className="font-medium font-mono">{blocked ? "Заблокирован" : "Активен"}</span>
