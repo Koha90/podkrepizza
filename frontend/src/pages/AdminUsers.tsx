@@ -90,7 +90,7 @@ export default function AdminUsers() {
             <th className="py-2 px-4 border">Email</th>
             <th className="py-2 px-4 border">Имя</th>
             <th className="py-2 px-4 border">Телефон</th>
-            <th className="py-2 px-4 border">Admin</th>
+            <th className="py-2 px-4 border">Роль</th>
             <th className="py-2 px-4 border">Блокировка</th>
             <th className="py-2 px-4 border">Зарегистрирован</th>
             <th className="py-2 px-4 border">Обновлён профиль</th>
@@ -129,7 +129,8 @@ export default function AdminUsers() {
                 <select
                   value={u.role}
                   onChange={(e) => toggleAdmin(u.id, e.target.value as Role)}
-                  className="border px-2 py-1 rounded"
+                  className="border px-2 py-1 rounded bg-green-50 my-2 w-full"
+
                 >
                   {Object.entries(roles).map(([key, label]) => (
                     <option key={key} value={key}>
